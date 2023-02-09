@@ -1,0 +1,14 @@
+[
+    {
+        "address": "https://www.youtube.com/watch?v=BaW_jenozKc",
+        "type": "video",
+        "output_template": "", 
+        "storage_path": "video/"
+    },
+    {
+        "address": "https://www.youtube.com/watch?v=BaW_jenozKc",
+        "type": "audio",
+        "output_template": "",
+        "storage_path": "audio/"
+    }
+]
