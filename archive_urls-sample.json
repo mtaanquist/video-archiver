@@ -1,12 +1,14 @@
 [
     {
         "address": "https://www.youtube.com/watch?v=BaW_jenozKc",
+        "cookie_file": "",
         "type": "video",
         "output_template": "", 
         "storage_path": "video/"
     },
     {
         "address": "https://www.youtube.com/watch?v=BaW_jenozKc",
+        "cookie_file": "",
         "type": "audio",
         "output_template": "",
         "storage_path": "audio/"

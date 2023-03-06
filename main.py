@@ -90,5 +90,8 @@ for url in archive_urls:
         outtmpl = os.path.join(url["storage_path"], outtmpl)
     ydl_opts["outtmpl"]["default"] = outtmpl
 
+    if url["cookie_file"]:
+        ydl_opts["cookiefile"] = url["cookie_file"]
+
     with yt_dlp.YoutubeDL(ydl_opts) as client:
         client.download(url["address"])
