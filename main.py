@@ -88,7 +88,7 @@ for url in archive_urls:
         ydl_opts["cookiefile"] = url["cookie_file"]
 
     if url["title_keywords"]:
-        ydl_opts["title_keywords"] = title_contains_keyword
+        ydl_opts["match_filter"] = title_contains_keyword
 
     with yt_dlp.YoutubeDL(ydl_opts) as client:
         client.download(url["address"])
