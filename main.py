@@ -7,9 +7,9 @@ from yt_dlp.postprocessor import MetadataParserPP
 
 def title_contains_keyword(info, *, incomplete):
     keywords = url["title_keywords"].split('|')
-    title = info.get('title', '').lower()
+    title = info.get('title', '')
     for keyword in keywords:
-        if title and not keyword.lower() in title:
+        if title and not keyword in title:
             return 'Title does not contain keyword: ' + keyword
 
 
