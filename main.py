@@ -5,6 +5,14 @@ import yt_dlp
 from yt_dlp.postprocessor import MetadataParserPP
 
 
+def title_contains_keyword(info, *, incomplete):
+    keywords = url["title_keywords"].split('|')
+    title = info.get('title', '').lower()
+    for keyword in keywords:
+        if title and not keyword.lower() in title:
+            return 'Title does not contain keyword: ' + keyword
+
+
 with open("archive_urls.json", "r") as file:
     archive_urls = json.load(file)
 
@@ -26,13 +34,6 @@ video_ydl_opts = {
     }, {
         "key": "EmbedThumbnail",
         "already_have_thumbnail": False
-    }, {
-        'key': 'MetadataParser',
-        'when': 'pre_process',
-        'actions': [
-            (MetadataParserPP.Actions.INTERPRET, 'title', "%(meta_title)s"), 
-            (MetadataParserPP.Actions.INTERPRET, 'uploader', "%(meta_artist)s")
-        ]
     }],
     "source_address": "0.0.0.0",
     "subtitleslangs": ["all"],
@@ -58,13 +59,6 @@ audio_ydl_opts = {
     }, {
         'key': 'FFmpegExtractAudio',
         'preferredcodec': 'm4a',
-    }, {
-        'key': 'MetadataParser',
-        'when': 'pre_process',
-        'actions': [
-            (MetadataParserPP.Actions.INTERPRET, 'title', "%(meta_title)s"), 
-            (MetadataParserPP.Actions.INTERPRET, 'uploader', "%(meta_artist)s")
-        ]
     }],
     "sleep_interval": 5,
     "sleep_interval_requests": 1,
@@ -92,6 +86,9 @@ for url in archive_urls:
 
     if url["cookie_file"]:
         ydl_opts["cookiefile"] = url["cookie_file"]
+
+    if url["title_keywords"]:
+        ydl_opts["title_keywords"] = title_contains_keyword
 
     with yt_dlp.YoutubeDL(ydl_opts) as client:
         client.download(url["address"])
