@@ -9,12 +9,16 @@ def title_contains_keyword(info, *, incomplete):
     keywords = url["title_keywords"].split('|')
     title = info.get('title', '').lower()
     for keyword in keywords:
-        if title and not keyword.lower() in title:
-            return 'Title does not contain keyword: ' + keyword
+        if keyword.lower() not in title:
+            return f'Title does not contain keyword: {keyword}'
 
 
-with open("archive_urls.json", "r") as file:
-    archive_urls = json.load(file)
+try:
+    with open("archive_urls.json", "r") as file:
+        archive_urls = json.load(file)
+except FileNotFoundError:
+    print("Error: archive_urls.json not found.")
+    exit(1)
 
 video_ydl_opts = {
     "check_formats": True,
@@ -69,19 +73,15 @@ audio_ydl_opts = {
 
 for url in archive_urls:
     ydl_opts = None
-    outtmpl = None
 
-    match url["type"]:
-        case "audio":
-            ydl_opts = copy.deepcopy(audio_ydl_opts)
-        case "video":
-            ydl_opts = copy.deepcopy(video_ydl_opts)
+    if url["type"] == "audio":
+        ydl_opts = copy.deepcopy(audio_ydl_opts)
+    elif url["type"] == "video":
+        ydl_opts = copy.deepcopy(video_ydl_opts)
 
-    outtmpl = ydl_opts["outtmpl"]["default"]
+    outtmpl = os.path.join(url["storage_path"], ydl_opts["outtmpl"]["default"])
     if url["output_template"]:
         outtmpl = os.path.join(url["storage_path"], url["output_template"])
-    else:
-        outtmpl = os.path.join(url["storage_path"], outtmpl)
     ydl_opts["outtmpl"]["default"] = outtmpl
 
     if url["cookie_file"]:
