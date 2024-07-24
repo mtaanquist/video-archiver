@@ -1,9 +1,12 @@
 import copy
+from datetime import datetime
 import json
 import os
 import yt_dlp
 from yt_dlp.postprocessor import MetadataParserPP
 
+# if in doubt about how a CLI option changes to embedded options, check out 
+# https://github.com/yt-dlp/yt-dlp/blob/master/devscripts/cli_to_api.py
 
 def title_contains_keyword(info, *, incomplete):
     keywords = url["title_keywords"].split('|')
@@ -73,6 +76,16 @@ audio_ydl_opts = {
 }
 
 for url in archive_urls:
+    archive_log_lines = 0
+    downloaded_videos = 0
+
+    # get the number of lines in the archive.log file
+    try:
+        with open("archive.log", "r") as file:
+            archive_log_lines = len(file.readlines())
+    except FileNotFoundError:
+        pass
+
     ydl_opts = None
 
     if url["type"] == "audio":
@@ -91,5 +104,45 @@ for url in archive_urls:
     if url["title_keywords"]:
         ydl_opts["match_filter"] = title_contains_keyword
 
+    # if sponsorblock_enabled exists and is true, add a new postprocessor to the ydl_opts
+    if url.get("sponsorblock_enabled", False):
+        ydl_opts['postprocessors'].append({
+            'api': 'https://sponsor.ajay.app',
+            'categories': {'sponsor'},
+            'key': 'SponsorBlock',
+            'when': 'after_filter'
+        })
+
+        ydl_opts['postprocessors'].append({
+            'force_keyframes': False,
+            'key': 'ModifyChapters',
+            'remove_chapters_patterns': [],
+            'remove_ranges': [],
+            'remove_sponsor_segments': {'sponsor'},
+            'sponsorblock_chapter_title': '[SponsorBlock]: %(category_names)l'
+        })
+
+        # modify the FFmpegMetadata postprocessor to include the sponsorblock chapters
+        for postprocessor in ydl_opts['postprocessors']:
+            if postprocessor.get('key') == 'FFmpegMetadata':
+                postprocessor['add_chapters'] = True
+                postprocessor['add_metadata'] = False
+                postprocessor['add_infojson'] = None
+                break
+
     with yt_dlp.YoutubeDL(ydl_opts) as client:
         client.download(url["address"])
+    
+    # once we've finished downloaded files, check how many new lines are in the archive.log file
+    try:
+        with open("archive.log", "r") as file:
+            downloaded_videos = len(file.readlines()) - archive_log_lines
+    except FileNotFoundError:
+        pass
+
+    url["last_run"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    url["last_run_downloaded"] = downloaded_videos
+    
+    # update the archive_urls.json file with the new last_run and last_run_downloaded values
+    with open("archive_urls.json", "w") as file:
+        json.dump(archive_urls, file, indent=4)

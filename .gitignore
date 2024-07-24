@@ -1,4 +1,4 @@
 .python-version
-
+__pycache__
 archive_urls.json
 archive.log
