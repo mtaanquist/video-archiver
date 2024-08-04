@@ -1,0 +1,4 @@
+[paths]
+archive_urls = "data/archive_urls.json"
+audio_options = "audio_options.json"
+video_options = "video_options.json"

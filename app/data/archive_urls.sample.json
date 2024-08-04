@@ -4,10 +4,8 @@
         "cookie_file": "",
         "title_keywords": "",
         "type": "video",
-        "output_template": "", 
-        "storage_path": "video/",
-        "last_run": "2023-01-01 00:00:00",
-        "downloads_last_run": 0
+        "output_template": "",
+        "storage_path": "video/"
     },
     {
         "address": "https://www.youtube.com/watch?v=BaW_jenozKc",
@@ -15,8 +13,6 @@
         "title_keywords": "",
         "type": "audio",
         "output_template": "",
-        "storage_path": "audio/",
-        "last_run": "2023-01-01 00:00:00",
-        "downloads_last_run": 0
+        "storage_path": "audio/"
     }
 ]

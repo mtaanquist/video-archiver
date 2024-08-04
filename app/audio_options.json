@@ -1,0 +1,28 @@
+{
+    "check_formats": true,
+    "concurrent_fragment_downloads": 5,
+    "download_archive": "audio_archive.log",
+    "format": "(bestaudio[acodec^=opus]/bestaudio)/best",
+    "ignoreerrors": "download_only",
+    "max_sleep_interval": 30,
+    "merge_output_template": "mkv",
+    "outtmpl": {
+        "default": "%(uploader)s - %(upload_date)s - %(title)s [%(id)s].%(ext)s"
+    },
+    "overwrites": false,
+    "postprocessors": [
+        {
+            "key": "FFmpegMetadata",
+            "add_metadata": true
+        },
+        {
+            "key": "FFmpegExtractAudio",
+            "preferredcodec": "m4a"
+        }
+    ],
+    "sleep_interval": 5,
+    "sleep_interval_requests": 1,
+    "source_address": "0.0.0.0",
+    "throttledratelimit": 100000,
+    "verbose": true
+}
