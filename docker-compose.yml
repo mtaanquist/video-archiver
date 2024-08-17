@@ -1,0 +1,9 @@
+services:
+  video-archiver:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./conf:/conf
+      - ./data:/data
+      - ./downloads:/downloads

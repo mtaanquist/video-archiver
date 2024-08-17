@@ -4,7 +4,7 @@ from pathlib import Path
 import toml
 import yt_dlp
 
-CONFIG_FILENAME = "config.toml"
+CONFIG_FILENAME = "/conf/config.toml"
 
 
 def read_config(config_file):
@@ -43,13 +43,15 @@ def initialize_ydl_opts(archive_url, audio_options, video_options):
 
 def set_output_template(archive_url, ydl_opts):
     outtmpl = Path(archive_url["storage_path"]) / ydl_opts["outtmpl"]["default"]
-    if archive_url["output_template"]:
+    if archive_url.get("output_template"):
         outtmpl = Path(archive_url["storage_path"]) / archive_url["output_template"]
-
     ydl_opts["outtmpl"]["default"] = str(outtmpl)
 
 
 def add_sponsorblock_postprocessors(archive_url, ydl_opts):
+    if "postprocessors" not in ydl_opts:
+        ydl_opts["postprocessors"] = []
+
     if archive_url.get("sponsorblock_enabled", False):
         ydl_opts["postprocessors"].append(
             {
@@ -83,19 +85,19 @@ def modify_ffmpegmetadata_postprocessor(ydl_opts):
             break
 
 
-def download_archive_url(archive_url, ydl_opts):
+def download_archive_url(archive_url, config, ydl_opts):
     set_output_template(archive_url, ydl_opts)
 
-    if archive_url["cookie_file"]:
+    ydl_opts["proxy"] = config["settings"]["proxy_url"]
+    ydl_opts["verbose"] = config["settings"]["verbose"]
+
+    if archive_url.get("cookie_file"):
         ydl_opts["cookiefile"] = archive_url["cookie_file"]
 
-    if archive_url["title_keywords"]:
+    if archive_url.get("title_keywords"):
         ydl_opts["match_filter"] = lambda info, *, incomplete: title_contains_keyword(
             info, archive_url
         )
-
-    if "postprocessors" not in ydl_opts:
-        ydl_opts["postprocessors"] = []
 
     add_sponsorblock_postprocessors(archive_url, ydl_opts)
 
@@ -115,5 +117,7 @@ def title_contains_keyword(info, archive_url):
 config, archive_urls, audio_options, video_options = read_config(CONFIG_FILENAME)
 for archive_url in archive_urls:
     download_archive_url(
-        archive_url, initialize_ydl_opts(archive_url, audio_options, video_options)
+        archive_url,
+        config,
+        initialize_ydl_opts(archive_url, audio_options, video_options),
     )

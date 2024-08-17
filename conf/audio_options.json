@@ -1,7 +1,7 @@
 {
     "check_formats": true,
     "concurrent_fragment_downloads": 5,
-    "download_archive": "audio_archive.log",
+    "download_archive": "/data/audio_archive.log",
     "format": "(bestaudio[acodec^=opus]/bestaudio)/best",
     "ignoreerrors": "download_only",
     "max_sleep_interval": 30,

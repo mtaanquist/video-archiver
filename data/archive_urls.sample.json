@@ -5,7 +5,7 @@
         "title_keywords": "",
         "type": "video",
         "output_template": "",
-        "storage_path": "video/"
+        "storage_path": "/downloads/video/"
     },
     {
         "address": "https://www.youtube.com/watch?v=BaW_jenozKc",
@@ -13,6 +13,6 @@
         "title_keywords": "",
         "type": "audio",
         "output_template": "",
-        "storage_path": "audio/"
+        "storage_path": "/downloads/audio/"
     }
 ]

@@ -1,0 +1,8 @@
+[paths]
+archive_urls = "data/archive_urls.json"
+audio_options = "conf/audio_options.json"
+video_options = "conf/video_options.json"
+
+[settings]
+proxy_url = ""  # optional, e.g. "socks://user:pass@localhost:port"
+verbose = false

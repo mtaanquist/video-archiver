@@ -3,6 +3,7 @@
 archive_urls.json
 archive.log
 config.toml
+downloads/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
